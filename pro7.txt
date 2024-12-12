@@ -1,0 +1,46 @@
+import math
+
+def gcd(m, n):
+    while n != 0:
+        m, n = n, m % n
+    return m
+
+def main():
+    message = input("Enter the message to be encrypted: ")
+
+    p = int(input("Enter value of p: "))
+    q = int(input("Enter value of q: "))
+
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    for e in range(2, phi):
+        if gcd(e, phi) == 1:
+            break
+
+    for d in range(2, phi):
+        if (e * d - 1) % phi == 0:
+            break
+
+    nummes = [ord(c) - 96 for c in message]
+
+    encrypted = []
+    for num in nummes:
+        encrypted_val = pow(num, e, n)
+        encrypted.append(encrypted_val)
+
+    print("\nEncrypted message:")
+    print(" ".join(map(str, encrypted)))
+
+    decrypted = []
+    for num in encrypted:
+        decrypted_val = pow(num, d, n)
+        decrypted.append(decrypted_val)
+
+    decrypted_message = "".join(chr(num + 96) for num in decrypted)
+
+    print("\nDecrypted message:")
+    print(decrypted_message)
+
+if __name__ == "__main__":
+    main()

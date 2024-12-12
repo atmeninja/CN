@@ -1,0 +1,48 @@
+def xor_operation(check_value, gen_poly):
+    for j in range(1, len(gen_poly)):
+        check_value[j] = '0' if check_value[j] == gen_poly[j] else '1'
+
+def crc(data, gen_poly):
+    n = len(gen_poly)
+    check_value = list(data[:n])  # Initialize check value with the first n bits of data
+
+    for i in range(n, len(data) + 1):
+        if check_value[0] == '1':
+            xor_operation(check_value, gen_poly)
+        check_value = check_value[1:] + ([data[i]] if i < len(data) else ['0'])
+
+    return ''.join(check_value[:-1]) 
+
+def main():
+    data = input("Enter data to be transmitted: ")
+    gen_poly = input("Enter the generating polynomial: ")
+
+    n = len(gen_poly)
+    data_padded = data + '0' * (n - 1)
+
+    print("\n----------------------------------------")
+    print(f"Data padded with n-1 zeros: {data_padded}")
+    print("----------------------------------------")
+
+    crc_value = crc(data_padded, gen_poly)
+
+    print(f"CRC or Check value is: {crc_value}")
+
+    final_data = data + crc_value
+    print("----------------------------------------")
+    print(f"Final data to be sent: {final_data}")
+    print("----------------------------------------")
+
+    received_data = input("Enter the received data: ")
+    print("\n-----------------------------")
+    print(f"Data received: {received_data}")
+
+    remainder = crc(received_data, gen_poly)
+    if '1' in remainder:
+        print("\nError detected\n")
+    else:
+        print("\nNo error detected\n")
+
+if __name__ == "__main__":
+    main()
+
